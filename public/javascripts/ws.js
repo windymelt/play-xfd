@@ -6,7 +6,7 @@ ws.onopen = function () {
 };
 
 ws.onmessage = function (message) {
-    $('body').append('<section>' + message + '</section>');
+    $('body').append('<section>' + message.data + '</section>');
 };
 
 ws.onerror = function (evt) {
