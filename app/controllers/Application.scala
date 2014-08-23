@@ -33,12 +33,13 @@ object Application extends Controller {
   def jenkinsNotify = Action { implicit request =>
       val query = request.queryString.map { case (k,v) => k -> v.mkString }
       // throw jenkinsnotify
+      jenkinsReceiver ! JenkinsNotify(query)
       Ok("ok")
   }
 }
 
 case class Connect(msg:String)
-case class JenkinsNotify(msg: String)
+case class JenkinsNotify(msg: Map[String, String])
 case class Broadcast(msg: String)
 
 class JenkinsReceiver extends Actor {
@@ -53,7 +54,9 @@ class JenkinsReceiver extends Actor {
             sender ! (iteratee, enumerator)
         case JenkinsNotify(msg) =>
             msg match {
-                case default => // write parsing and broadcast code here
+                case query => 
+                // write parsing and broadcast code here
+                Broadcast("JOB NAME: " + query("job_name") + "BUILD NO." + query("build_number"))
             }
         case Broadcast(msg) =>
             channel.push(msg);
