@@ -30,8 +30,8 @@ object Application extends Controller {
       connecting.mapTo[(Iteratee[String, _], Enumerator[String])]
   }
   
-  def jenkinsNotify(job_name: String, build_number: String) = Action { implicit request =>
-      val query = Map("job_name" -> job_name, "build_number" -> build_number)
+  def jenkinsNotify(status: String, job_name: String, build_number: String) = Action { implicit request =>
+      val query = Map("status" -> status, "job_name" -> job_name, "build_number" -> build_number)
       // throw jenkinsnotify
       jenkinsReceiver ! JenkinsNotify(query)
       Ok("ok")
@@ -57,7 +57,7 @@ class JenkinsReceiver extends Actor {
                 case query: Map[String, String] => 
                 // write parsing and broadcast code here
                 println(query)
-                self ! Broadcast("JOB NAME: " + query("job_name") + "BUILD NO." + query("build_number"))
+                self ! Broadcast("{ \"status\":\"" + query("status") + "\", \"name\":\"" + query("job_name") + "\", \"no\":\"" + query("build_number") + "\" }")
                 case default =>
                     println("unrecognized message: " + default)
             }
