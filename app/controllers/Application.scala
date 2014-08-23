@@ -57,7 +57,7 @@ class JenkinsReceiver extends Actor {
                 case query: Map[String, String] => 
                 // write parsing and broadcast code here
                 println(query)
-                Broadcast("JOB NAME: " + query("job_name") + "BUILD NO." + query("build_number"))
+                self ! Broadcast("JOB NAME: " + query("job_name") + "BUILD NO." + query("build_number"))
                 case default =>
                     println("unrecognized message: " + default)
             }
