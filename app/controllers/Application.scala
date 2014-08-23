@@ -54,10 +54,12 @@ class JenkinsReceiver extends Actor {
             sender ! (iteratee, enumerator)
         case JenkinsNotify(msg) =>
             msg match {
-                case query => 
+                case query: Map[String, String] => 
                 // write parsing and broadcast code here
                 println(query)
                 Broadcast("JOB NAME: " + query("job_name") + "BUILD NO." + query("build_number"))
+                case default =>
+                    println("unrecognized message: " + default)
             }
         case Broadcast(msg) =>
             channel.push(msg);
